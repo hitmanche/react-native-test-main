@@ -8,32 +8,18 @@
  * @format
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-} from 'react-native';
+import React from "react";
+import { useColorScheme } from "react-native";
 
-import { Colors } from 'react-native/Libraries/NewAppScreen';
-
-import { AppState, StateProvider } from './src/global/context';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import Users from './src/modules/users';
-import Posts from './src/modules/posts';
-import MainStackNavigator from './src/navigation/MainNav';
+import { AppState, StateProvider } from "./src/global/context";
+import { createStackNavigator } from "@react-navigation/stack";
+import MainStackNavigator from "./src/navigation/MainNav";
+import { IUser } from "./src/models/apiModels";
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const isDarkMode = useColorScheme() === "dark";
 
   const initialState: AppState = {
     allUsers: [],
@@ -41,23 +27,19 @@ const App = () => {
 
   const reducer = (state: AppState, action: any) => {
     switch (action.type) {
-
-      case 'user/add': {
+      case "user/add": {
         return {
           ...state,
-          allUsers: [...state.allUsers, ...action.users]
+          allUsers: [...state.allUsers, ...action.users],
         };
       }
 
-      case 'user/delete': {
-        const cloneUsers = state.allUsers.slice();
-        const userIndex = state.allUsers.indexOf(action.user);
-        if (userIndex > -1) {
-          cloneUsers.splice(userIndex, 1);
-        }
+      case "user/delete": {
         return {
           ...state,
-          allUsers: cloneUsers
+          allUsers: state.allUsers.filter(
+            (user: IUser) => user.id !== action.user.id
+          ),
         };
       }
 
